@@ -11,6 +11,9 @@ setup(
     url='https://eventray.com/',
     packages=find_packages(exclude=['tests']),
     include_package_data=True,
+    install_requires=[
+        'flake8-import-order>=0.16'
+    ],
     zip_safe=True,
     entry_points={
         'flake8_import_order.styles': [

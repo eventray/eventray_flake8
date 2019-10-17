@@ -1,3 +1,4 @@
+import flake8_import_order
 import flake8_import_order.styles
 
 
@@ -14,7 +15,7 @@ class EventRayStyle(flake8_import_order.styles.Style):
 
     @staticmethod
     def import_key(import_):
-        if import_.type == flake8_import_order.styles.IMPORT_APP:
+        if import_.type == flake8_import_order.ImportType.APPLICATION:
             response = (
                 True, import_.package, import_.is_from,
                 import_.level, import_.modules, import_.names,
@@ -29,8 +30,8 @@ class EventRayStyle(flake8_import_order.styles.Style):
 
     @staticmethod
     def same_section(previous, current) -> bool:
-        prev_is_app = previous.type == flake8_import_order.styles.IMPORT_APP
-        current_is_app = current.type == flake8_import_order.styles.IMPORT_APP
+        prev_is_app = previous.type == flake8_import_order.ImportType.APPLICATION
+        current_is_app = current.type == flake8_import_order.ImportType.APPLICATION
 
         result = prev_is_app == current_is_app
 
@@ -39,8 +40,10 @@ class EventRayStyle(flake8_import_order.styles.Style):
     def check(self):
         yield from super().check()
 
-        for current in self.imports:
-            if current.type != flake8_import_order.styles.IMPORT_APP:
+        for current in self.nodes:
+            if not hasattr(current, 'type'):
+                continue
+            if current.type != flake8_import_order.ImportType.APPLICATION:
                 if current.is_from:
                     corrected = 'import %s' % current.modules[0]
                     yield flake8_import_order.styles.Error(
