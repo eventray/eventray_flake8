@@ -43,11 +43,12 @@ class EventRayStyle(flake8_import_order.styles.Style):
         for current in self.nodes:
             if not hasattr(current, 'type'):
                 continue
+
             if current.type != flake8_import_order.ImportType.APPLICATION:
                 if current.is_from:
                     corrected = 'import %s' % current.modules[0]
                     yield flake8_import_order.styles.Error(
-                        current.start_line,
+                        getattr(current, 'start_line', getattr(current, 'lineno', 0)),
                         'I999',
                         'Only app imports can import names. '
                         'Should be "{0}"'.format(corrected),
